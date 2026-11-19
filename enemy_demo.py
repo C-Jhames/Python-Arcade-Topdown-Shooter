@@ -41,6 +41,7 @@ class EnemyDemo(arcade.Window):
         self.background_color = (14, 24, 41)
         self.enemies = arcade.SpriteList()
         self.enemy_bullets = arcade.SpriteList()
+        self.player_bullets = arcade.SpriteList()
         self.time_until_spawn = SPAWN_INTERVAL
         self.spawn_enemy()
 
@@ -52,6 +53,8 @@ class EnemyDemo(arcade.Window):
         self.clear()
         self.enemies.draw()
         self.enemy_bullets.draw()
+        #Draw any blue test bullets currently on the screen
+        self.player_bullets.draw()
 
     def on_update(self, delta_time):
         self.time_until_spawn -= delta_time
@@ -71,11 +74,26 @@ class EnemyDemo(arcade.Window):
             bullet.center_y -= 275 * delta_time
             if bullet.top < 0:
                 bullet.remove_from_sprite_lists()
+        for bullet in list(self.player_bullets):
+            #Move the blue bullet upward each frame.
+            bullet.center_y += 400 * delta_time
+
+            #If the bullet touches an enemy, damage it and remove the bullet.
+            hits = arcade.check_for_collision_with_list(bullet, self.enemies)
+            if hits:
+                hits[0].take_damage()
+                bullet.remove_from_sprite_lists()
+            elif bullet.bottom > HEIGHT:
+                bullet.remove_from_sprite_lists()
 
     def on_key_press(self, symbol, modifiers):
         if symbol == arcade.key.ESCAPE:
             self.close()
-
+        elif symbol == arcade.key.SPACE:
+            # Create a blue test bullet at the bottom center of the window.
+            bullet = arcade.SpriteSolidColor(5, 16, color=(80, 200, 225))
+            bullet.position = WIDTH / 2, 30
+            self.player_bullets.append(bullet)
 
 if __name__ == "__main__":
     window = EnemyDemo()
