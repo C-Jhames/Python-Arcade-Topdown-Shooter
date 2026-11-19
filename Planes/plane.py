@@ -1,0 +1,38 @@
+#Plane parent class, player and enemy planes inherit from this class
+#Allows consistency for both
+
+import math
+import arcade
+
+class Plane(arcade.sprite):
+    def __init__(self, image, x, y, health=1, speed=200, bullet_direction=1):
+        super().__init__(image, scale=0.5, center_x=x, center_y=y)
+        self.health = health
+        self.speed = speed
+        self.is_hit = False
+        self.bullet_direction = bullet_direction
+        self.fire_delay = 0.25
+        self.shot_timer = 0.0
+        self. hit_timer = 0.0
+        self.move_x = 0.0
+        self.move_y = 0.0
+
+    def set_direction(self, dx, dy):
+        # normalize diagonal input so diagonal travel isn't faster
+        length = max(1.0, math.hypot(dx,dy))
+        self._move_x = dx / length
+        self._move_y = dy / length
+
+    def move_up(self):
+        self.set_direction(0, 1)
+    def move_down(self):
+        self.set_direction(0, -1)
+    def move_left(self):
+        self.set_direction(-1, 0)
+    def move_right(self):
+        self.set_direction(1, 0)
+
+    def take_damage(self):
+        if self.isdestroyed():
+            self.remove_from_sprite_lists()
+    
