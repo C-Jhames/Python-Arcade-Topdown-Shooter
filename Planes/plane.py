@@ -36,7 +36,10 @@ class Plane(arcade.Sprite):
     def move_right(self):
         self.set_direction(1, 0)
 
-    def take_damage(self):
-        if self.isdestroyed():
+    def take_damage(self, amount=1):
+        #Subtract the amount of damage from the health of the plane
+        self.health = max(0, self.health - amount)
+        if self.is_destroyed():
             self.remove_from_sprite_lists()
-    
+    def is_destroyed (self):
+        return self.health == 0
