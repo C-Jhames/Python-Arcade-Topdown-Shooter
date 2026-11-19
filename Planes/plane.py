@@ -4,7 +4,7 @@
 import math
 import arcade
 
-class Plane(arcade.sprite):
+class Plane(arcade.Sprite):
     def __init__(self, image, x, y, health=1, speed=200, bullet_direction=1):
         super().__init__(image, scale=0.5, center_x=x, center_y=y)
         self.health = health
@@ -17,11 +17,15 @@ class Plane(arcade.sprite):
         self.move_x = 0.0
         self.move_y = 0.0
 
+    def update (self, delta_time):
+        self.center_x += self.move_x * self.speed * delta_time
+        self.center_y += self.move_y * self.speed * delta_time
+
     def set_direction(self, dx, dy):
         # normalize diagonal input so diagonal travel isn't faster
         length = max(1.0, math.hypot(dx,dy))
-        self._move_x = dx / length
-        self._move_y = dy / length
+        self.move_x = dx / length
+        self.move_y = dy / length
 
     def move_up(self):
         self.set_direction(0, 1)
